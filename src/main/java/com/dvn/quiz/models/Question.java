@@ -1,6 +1,7 @@
 package com.dvn.quiz.models;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,26 +10,31 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name= "questions", schema = "quiz")
 public class Question{
-
+	
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long questionId;
+
 	private String questionText;
-	private List<Option> option;
 	
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private Set<Option> options = new HashSet<>();
+
 	public Question() {
+		super();
 	}
-	
-	public Question(Long questionId, String questionText ,List<Option> option) {
+
+	public Question(Long questionId, String questionText, Set<Option> options) {
 		super();
 		this.questionId = questionId;
 		this.questionText = questionText;
-		this.option = option;
+		this.options = options;
 	}
 
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
 	public Long getQuestionId() {
 		return questionId;
 	}
@@ -45,18 +51,14 @@ public class Question{
 		this.questionText = questionText;
 	}
 
-	@OneToMany(targetEntity=Option.class , mappedBy = "question", cascade = CascadeType.ALL ,fetch = FetchType.LAZY )
-	public List<Option> getOption() {
-		return option;
+	public Set<Option> getOptions() {
+		return options;
 	}
 
-	public void setOption(List<Option> option) {
-		this.option = option;
+	public void setOptions(Set<Option> options) {
+		this.options = options;
 	}
+	
 
-	@Override
-	public String toString() {
-		return "Question [questionId=" + questionId + ", questionText=" + questionText + ", options=" + option + "]";
-	}
 	
 }
