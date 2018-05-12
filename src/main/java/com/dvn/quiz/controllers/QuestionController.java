@@ -5,7 +5,12 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,25 +29,28 @@ public class QuestionController {
 	
 	@GetMapping
 	@RequestMapping("/questions")
-	public List<Question> list(){
-		return questionService.getAllQuestions();
+	public ResponseEntity<List<Question>> list(){
+		List<Question> questions = questionService.getAllQuestions();
+		return new ResponseEntity<List<Question>>(questions,HttpStatus.OK);		
 	}
 	
-//	@GetMapping
-//	@RequestMapping("/question/{id}")
-//	public Question getQuestion(@PathVariable long id) {
-//		return questionService.getQuestion(id);
-//	}
-//	
-	@RequestMapping(method = RequestMethod.POST, value= "/questions")
-	public void addQuestion(@RequestBody Question question) {
-		logger.info("Request recieved from client : " + question.toString());
-		questionService.addQuestion(question);
+	@GetMapping
+	@RequestMapping(method = RequestMethod.GET, value="/questions/{id}")
+	public ResponseEntity<Question> getQuestion(@PathVariable long id) {
+		return new ResponseEntity<Question>(questionService.getQuestion(id),HttpStatus.OK);
 	}
-//	
-//	@RequestMapping(method = RequestMethod.PUT, value="/questions/{id}")
-//	public void updateQuestion(@RequestBody Question question ,@PathVariable long id) {
-//		questionService.updateQuestion(id, question);
-//	}
+	
+	@PostMapping
+	@RequestMapping(method = RequestMethod.POST, value= "/questions")
+	public ResponseEntity<Question> addQuestion(@RequestBody Question question) {
+		logger.info("Request recieved from client : " + question.toString());
+		return new ResponseEntity<Question>(questionService.addQuestion(question),HttpStatus.OK);
+	}
 
+	@PutMapping
+	@RequestMapping(method = RequestMethod.PUT, value="/questions/{id}")
+	public ResponseEntity<Question> updateQuestion(@RequestBody Question question ,@PathVariable long id) {
+		return new ResponseEntity<Question>(questionService.updateQuestion(id,question),HttpStatus.OK);
+	}
+	
 }
