@@ -19,6 +19,7 @@ public class Option {
 	private Long optionId;
 	
 	private String optionText;
+	private boolean correctAnswer=false;
 	
 	@JsonIgnore
 	@ManyToOne(fetch = FetchType.EAGER)
@@ -28,8 +29,12 @@ public class Option {
 	public Option() {
 	}
 
-	public Option(String optionText) {
+	public Option(Long optionId, String optionText, boolean correctAnswer, Question question) {
+		super();
+		this.optionId = optionId;
 		this.optionText = optionText;
+		this.correctAnswer = correctAnswer;
+		this.question = question;
 	}
 
 	public Long getOptionId() {
@@ -48,6 +53,14 @@ public class Option {
 		this.optionText = optionText;
 	}
 
+	public boolean isCorrectAnswer() {
+		return correctAnswer;
+	}
+
+	public void setCorrectAnswer(boolean correctAnswer) {
+		this.correctAnswer = correctAnswer;
+	}
+
 	public Question getQuestion() {
 		return question;
 	}
@@ -55,6 +68,5 @@ public class Option {
 	public void setQuestion(Question question) {
 		this.question = question;
 	}
-	
 
 }
