@@ -1,64 +1,65 @@
 package com.dvn.quiz.models;
 
+import java.io.Serializable;
+import javax.persistence.*;
+
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 
+/**
+ * The persistent class for the questions database table.
+ * 
+ */
 @Entity
-@Table(name= "questions", schema = "quiz")
-public class Question{
-	
-//	@Id
-//	@GeneratedValue(generator = "UUID")
-//	@GenericGenerator(name = "UUID",strategy = "org.hibernate.id.UUIDGenerator")
-//	@Column(name = "questionId", updatable = false, nullable = false)
-//	private UUID questionId;
-	
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long questionId;
+@Table(name="questions")
+public class Question implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private int questionId;
+
+	private String author;
+
+	private boolean expired;
 
 	private String questionText;
+
+	//bi-directional many-to-one association to Option
 	
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany( mappedBy="question",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Set<Option> options = new HashSet<>();
-    
-    private boolean isActive=true;
 
 	public Question() {
-		super();
 	}
 
-	public Question(Long questionId, String questionText, Set<Option> options, boolean isActive) {
-		super();
+	public int getQuestionId() {
+		return this.questionId;
+	}
+
+	public void setQuestionId(int questionId) {
 		this.questionId = questionId;
-		this.questionText = questionText;
-		this.options = options;
-		this.isActive = isActive;
 	}
 
-	public Long getQuestionId() {
-		return questionId;
+	public String getAuthor() {
+		return this.author;
 	}
 
-	public void setQuestionId(Long questionId) {
-		this.questionId = questionId;
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public boolean isExpired() {
+		return expired;
+	}
+
+	public void setExpired(boolean expired) {
+		this.expired = expired;
 	}
 
 	public String getQuestionText() {
-		return questionText;
+		return this.questionText;
 	}
 
 	public void setQuestionText(String questionText) {
@@ -66,20 +67,23 @@ public class Question{
 	}
 
 	public Set<Option> getOptions() {
-		return options;
+		return this.options;
 	}
 
 	public void setOptions(Set<Option> options) {
 		this.options = options;
 	}
 
-	public boolean isActive() {
-		return isActive;
+	public Option addOption(Option option) {
+		getOptions().add(option);
+		option.setQuestion(this);
+		return option;
 	}
 
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
+	public Option removeOption(Option option) {
+		getOptions().remove(option);
+		option.setQuestion(null);
+		return option;
 	}
 
-	
 }

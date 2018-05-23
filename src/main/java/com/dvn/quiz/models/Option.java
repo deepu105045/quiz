@@ -1,56 +1,38 @@
 package com.dvn.quiz.models;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.io.Serializable;
+import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
+/**
+ * The persistent class for the options database table.
+ * 
+ */
 @Entity
-@Table(name="options", schema = "quiz")
-public class Option {
-	
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long optionId;
-	
+@Table(name="options")
+public class Option implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private int optionId;
+
+	private boolean correctAnswer;
+
 	private String optionText;
-	private boolean correctAnswer=false;
-	
-	@JsonIgnore
-	@ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "questionId")
+
+	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Question question;
 
 	public Option() {
 	}
 
-	public Option(Long optionId, String optionText, boolean correctAnswer, Question question) {
-		super();
+	public int getOptionId() {
+		return this.optionId;
+	}
+
+	public void setOptionId(int optionId) {
 		this.optionId = optionId;
-		this.optionText = optionText;
-		this.correctAnswer = correctAnswer;
-		this.question = question;
-	}
-
-	public Long getOptionId() {
-		return optionId;
-	}
-
-	public void setOptionId(Long optionId) {
-		this.optionId = optionId;
-	}
-
-	public String getOptionText() {
-		return optionText;
-	}
-
-	public void setOptionText(String optionText) {
-		this.optionText = optionText;
 	}
 
 	public boolean isCorrectAnswer() {
@@ -61,8 +43,16 @@ public class Option {
 		this.correctAnswer = correctAnswer;
 	}
 
+	public String getOptionText() {
+		return this.optionText;
+	}
+
+	public void setOptionText(String optionText) {
+		this.optionText = optionText;
+	}
+
 	public Question getQuestion() {
-		return question;
+		return this.question;
 	}
 
 	public void setQuestion(Question question) {

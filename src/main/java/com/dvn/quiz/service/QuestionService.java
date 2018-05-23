@@ -52,8 +52,12 @@ public class QuestionService {
 	
 	public void deactivateQuestion(Long questionId) {
 		Question question=getQuestion(questionId);
-		question.setActive(false);
+//		question.setActive(false);
 		questionRepository.save(question);
+	}
+
+	public void getAnswer(long id) {
+		
 	}
 
 }
