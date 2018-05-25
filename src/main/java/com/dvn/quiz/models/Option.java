@@ -12,19 +12,21 @@ import javax.persistence.*;
 @Table(name="options")
 public class Option implements Serializable {
 	private static final long serialVersionUID = 1L;
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column
 	private int optionId;
-
 	private boolean correctAnswer;
-
 	private String optionText;
 
-	@ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private Question question;
-
 	public Option() {
+	}
+
+	public Option(boolean correctAnswer, String optionText) {
+		super();
+		this.correctAnswer = correctAnswer;
+		this.optionText = optionText;
 	}
 
 	public int getOptionId() {
@@ -50,13 +52,4 @@ public class Option implements Serializable {
 	public void setOptionText(String optionText) {
 		this.optionText = optionText;
 	}
-
-	public Question getQuestion() {
-		return this.question;
-	}
-
-	public void setQuestion(Question question) {
-		this.question = question;
-	}
-
 }

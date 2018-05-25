@@ -6,39 +6,42 @@ import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
-
 /**
  * The persistent class for the questions database table.
  * 
  */
 @Entity
-@Table(name="questions")
+@Table(name = "questions")
 public class Question implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private int questionId;
-
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column
+	private long questionId;
 	private String author;
-
 	private boolean expired;
-
 	private String questionText;
 
-	//bi-directional many-to-one association to Option
-	
-	@OneToMany( mappedBy="question",cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JoinColumn(name = "questionId")
 	private Set<Option> options = new HashSet<>();
 
 	public Question() {
 	}
 
-	public int getQuestionId() {
+	public Question(String author, boolean expired, String questionText, Set<Option> options) {
+		this.author = author;
+		this.expired = expired;
+		this.questionText = questionText;
+		this.options = options;
+	}
+
+	public long getQuestionId() {
 		return this.questionId;
 	}
 
-	public void setQuestionId(int questionId) {
+	public void setQuestionId(long questionId) {
 		this.questionId = questionId;
 	}
 
@@ -72,18 +75,6 @@ public class Question implements Serializable {
 
 	public void setOptions(Set<Option> options) {
 		this.options = options;
-	}
-
-	public Option addOption(Option option) {
-		getOptions().add(option);
-		option.setQuestion(this);
-		return option;
-	}
-
-	public Option removeOption(Option option) {
-		getOptions().remove(option);
-		option.setQuestion(null);
-		return option;
 	}
 
 }
