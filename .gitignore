@@ -25,3 +25,5 @@
 /.nb-gradle/
 
 derby.log
+.DS_Store
+**/.DS_Sgore

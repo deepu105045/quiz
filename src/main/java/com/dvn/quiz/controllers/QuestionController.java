@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dvn.quiz.models.Question;
+import com.dvn.quiz.business.domain.QuestionAnswers;
+import com.dvn.quiz.business.domain.QuestionOptions;
+import com.dvn.quiz.entity.Question;
 import com.dvn.quiz.service.QuestionService;
 
 @RestController
@@ -30,15 +32,21 @@ public class QuestionController {
 	
 	@GetMapping
 	@RequestMapping("/questions")
-	public ResponseEntity<List<Question>> list(){
-		List<Question> questions = questionService.getAllQuestions();
-		return new ResponseEntity<List<Question>>(questions,HttpStatus.OK);		
+	public ResponseEntity<List<QuestionOptions>> list(){
+		List<QuestionOptions> questions = questionService.getAllQuestions();
+		return new ResponseEntity<List<QuestionOptions>>(questions,HttpStatus.OK);		
 	}
 	
 	@GetMapping
 	@RequestMapping(method = RequestMethod.GET, value="/questions/{id}")
-	public ResponseEntity<Question> getQuestion(@PathVariable long id) {
-		return new ResponseEntity<Question>(questionService.getQuestion(id),HttpStatus.OK);
+	public ResponseEntity<QuestionOptions> getQuestion(@PathVariable long id) {
+		return new ResponseEntity<QuestionOptions>(questionService.getQuestion(id),HttpStatus.OK);
+	}
+	
+	@GetMapping
+	@RequestMapping(method = RequestMethod.GET, value="/questions/{id}/answer")
+	public ResponseEntity<QuestionAnswers> getAnswer(@PathVariable long id) {
+		return new ResponseEntity<QuestionAnswers>( questionService.getAnswer(id),HttpStatus.OK);
 	}
 	
 	@PostMapping
@@ -56,10 +64,11 @@ public class QuestionController {
 		return new ResponseEntity<Question>(questionService.updateQuestion(id,question),HttpStatus.OK);
 	}
 	
-//	@GetMapping
-//	@RequestMapping(method = RequestMethod.GET, value="/questions/{id}")
-//	public ResponseEntity<Question> getAnswer(@PathVariable long id) {
-//		questionService.getAnswer(id);
-//	}
+	@PutMapping
+	@Transactional
+	@RequestMapping(method = RequestMethod.PUT, value="/questions/{id}/deactivate")
+	public ResponseEntity<Question> deactivateQuestion(@PathVariable long id){
+		return new ResponseEntity<Question>(questionService.deactivateQuestion(id), HttpStatus.OK);
+	}
 	
 }

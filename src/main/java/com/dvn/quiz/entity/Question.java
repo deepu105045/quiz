@@ -1,4 +1,4 @@
-package com.dvn.quiz.models;
+package com.dvn.quiz.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
