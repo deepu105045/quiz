@@ -3,6 +3,7 @@ package com.dvn.quiz.service;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,15 +47,21 @@ public class QuestionService {
 	}
 	
 	public QuestionOptions getQuestion(Long id) {
-		Question  dbQuestion= questionRepository.findOne(id);
-		Set<String> options = new HashSet<>();
+		Question dbQuestion= questionRepository.findOne(id);
 		
-		QuestionOptions qo= new QuestionOptions();
-		qo.setQuestionId(dbQuestion.getQuestionId());
-		qo.setQuestionText(dbQuestion.getQuestionText());
-		dbQuestion.getOptions().forEach(dbOption -> options.add(dbOption.getOptionText()));
-		qo.setOptions(options);
-		return qo;
+		if(dbQuestion !=null) {
+			QuestionOptions qo= new QuestionOptions();
+			qo.setQuestionId(dbQuestion.getQuestionId());
+			qo.setQuestionText(dbQuestion.getQuestionText());
+			Set<String> options = new HashSet<>();
+			dbQuestion.getOptions().forEach(dbOption -> options.add(dbOption.getOptionText()));
+			qo.setOptions(options);
+			return qo;
+		}else {
+			return null;
+		}
+		
+
 	}
 
 	public Question addQuestion(Question question) {

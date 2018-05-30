@@ -1,6 +1,7 @@
 package com.dvn.quiz.controllers;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,43 +33,55 @@ public class QuestionController {
 	
 	@GetMapping
 	@RequestMapping("/questions")
-	public ResponseEntity<List<QuestionOptions>> list(){
+	public ResponseEntity<List<QuestionOptions>> getQuestions(){
 		List<QuestionOptions> questions = questionService.getAllQuestions();
-		return new ResponseEntity<List<QuestionOptions>>(questions,HttpStatus.OK);		
+		return Optional.ofNullable(questions)
+				.map(question -> ResponseEntity.ok().body(question))
+				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	
 	@GetMapping
 	@RequestMapping(method = RequestMethod.GET, value="/questions/{id}")
 	public ResponseEntity<QuestionOptions> getQuestion(@PathVariable long id) {
-		return new ResponseEntity<QuestionOptions>(questionService.getQuestion(id),HttpStatus.OK);
+		return Optional.ofNullable(questionService.getQuestion(id))
+						.map(question -> ResponseEntity.ok().body(question))
+						.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	
 	@GetMapping
 	@RequestMapping(method = RequestMethod.GET, value="/questions/{id}/answer")
 	public ResponseEntity<QuestionAnswers> getAnswer(@PathVariable long id) {
-		return new ResponseEntity<QuestionAnswers>( questionService.getAnswer(id),HttpStatus.OK);
+		return Optional.ofNullable(questionService.getAnswer(id))
+				.map(question -> ResponseEntity.ok().body(question))
+				.orElseGet(() -> ResponseEntity.notFound().build());
 	}
 	
 	@PostMapping
-	@RequestMapping(method = RequestMethod.POST, value= "/questions")
 	@Transactional
+	@RequestMapping(method = RequestMethod.POST, value= "/questions")
 	public ResponseEntity<Question> addQuestion(@RequestBody Question question) {
 		logger.info("Request recieved from client : " + question.toString());
-		return new ResponseEntity<Question>(questionService.addQuestion(question),HttpStatus.OK);
+		return Optional.ofNullable(questionService.addQuestion(question))
+				.map(ques -> ResponseEntity.status(HttpStatus.CREATED).body(ques))
+				.orElseGet(() -> ResponseEntity.badRequest().build());
 	}
 
 	@PutMapping
-	@RequestMapping(method = RequestMethod.PUT, value="/questions/{id}")
 	@Transactional
+	@RequestMapping(method = RequestMethod.PUT, value="/questions/{id}")
 	public ResponseEntity<Question> updateQuestion(@RequestBody Question question ,@PathVariable long id) {
-		return new ResponseEntity<Question>(questionService.updateQuestion(id,question),HttpStatus.OK);
+		return Optional.ofNullable(questionService.updateQuestion(id,question))
+				.map(ques -> ResponseEntity.ok().body(ques))
+				.orElseGet(() -> ResponseEntity.badRequest().build());
 	}
 	
 	@PutMapping
 	@Transactional
 	@RequestMapping(method = RequestMethod.PUT, value="/questions/{id}/deactivate")
 	public ResponseEntity<Question> deactivateQuestion(@PathVariable long id){
-		return new ResponseEntity<Question>(questionService.deactivateQuestion(id), HttpStatus.OK);
+		return Optional.ofNullable(questionService.deactivateQuestion(id))
+				.map(question -> ResponseEntity.ok().body(question))
+				.orElseGet(() -> ResponseEntity.badRequest().build());
 	}
 	
 }
